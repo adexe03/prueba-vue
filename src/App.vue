@@ -8,10 +8,14 @@
   </p>
   <div v-if="option=='list'">
     <h1>Lista de tareas</h1>
+    <p>
+      Filtro:
+      <input type="text" placeholder="Filtrar..." v-model="wordSearch">
+    </p>
     <p>Se han encontrado {{tasks.length}} tarea/s</p>
     <p>{{ textoNumeroTareas }}</p>
     <ul>
-      <ViewTask v-for="task of tasks" :key="task.id" :task="task" @remove-task="removeTask"/>
+      <ViewTask v-for="task of filteredTasks" :key="task.id" :task="task" @remove-task="removeTask"/>
     </ul>
     <ul>
       <li v-for='task of tasks' :key='task.id' @click="removeTask(task.id)">
@@ -35,6 +39,8 @@ const tasks = ref([
   { id: 3, name: 'Corregir exámenes de recuperación' },
   { id: 4, name: 'Preparar examen chungo de Vue' },
 ]);
+
+const wordSearch = ref('');
 
 const newTask = ref('');
 
@@ -61,6 +67,10 @@ const newID = computed(() => {
 function removeTask(id) {
   tasks.value = tasks.value.filter(t => t.id !== id);
 }
+
+const filteredTasks = computed(() => {
+  return tasks.value.filter(t => t.name.toLocaleLowerCase().includes(wordSearch.value.toLocaleLowerCase()));
+});
 </script>
 
 <style lang="">
